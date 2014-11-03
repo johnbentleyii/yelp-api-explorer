@@ -1,0 +1,8 @@
+// Find the API v2.0 keys at http://www.yelp.com/developers/manage_api_keys
+var auth = {
+	consumerKey: 		'<Yelp Consumer Key>',
+	consumerSecret:		'<Yelp Consumer Secrent>',
+	accessToken:		'<Yelp Token>',
+	accessTokenSecret:	'<Yelp Token Secret>'
+
+}

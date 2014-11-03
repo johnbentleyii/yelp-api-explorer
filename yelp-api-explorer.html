@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yelp API Explorer</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/hmac-sha1.js"></script>
+	<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+	<script src="js/oauth-1.0a.js"></script>
+	<script src="yelp-auth.js"></script>
+	<script src="yelp.js"></script>
+	<script>
+		function findBusiness( ) {
+			
+			var newSearch = {
+				term: 			$( "#term" ).val(),
+				limit: 			$( "#limit" ).val() * 1,
+				offset: 		$( "#offset" ).val() * 1,
+				sort:		$( "#sort" ).val() * 1,
+				location: 		$( "#location" ).val(),
+				radius_filter: 	$( "#radius" ).val() * 1,
+				deals_filter:	$( "#deals" ).val()
+			};
+			
+			for( key in newSearch )
+				if( newSearch[key] == '' )
+					delete newSearch[key];
+
+			yelpFindBusinesses( newSearch );
+
+			return false;
+		}
+	</script>
+  </head>
+  <body class="container">
+    <h1>Yelp Search</h1>
+	<form class="form-horizontal" role="form" onsubmit="return findBusiness();">
+		<div class="form-group">
+			<label class="control-label col-sm-2">Term:</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="term" type="text"placeholder="Enter a term such as restaurants, bars, auto repair, bookstores, etc.">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Location:</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="location" type="text" placeholder="Enter City, State, ZIP, etc.">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Radius:</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="radius" type="text" placeholder="Area to search in meters (1mi ~= 1069m), up to 40,000m">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Limit:</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="limit" type="text" placeholder="Number of business to return, up to 20">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Offset:</label>
+			<div class="col-sm-10">
+				<input class="form-control" id="offset" type="text" placeholder="Number to start at so you can go past the limit of 20">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-2">Sort:</label>
+			<div class="col-sm-4">
+				<select id="sort" class="form-control">
+					<option value="">Unset - Best matched</option>
+					<option value="0">Best matched (0)</option>
+					<option value="1">Distance (1)</option>	
+					<option value="2">Highest Rated (2)</option>
+				</select>
+			</div>
+			<label class="control-label col-sm-2">Deals:</label>
+			<div class="col-sm-4">
+				<select id="deals" class="form-control">
+					<option value="">Optional - not considered</option>
+					<option value="false">Doesn't matter</option>
+					<option value="true">Must have deals</option>	
+				</select>
+			</div>
+		</div>			
+		<div class="form-group">
+			<div class="col-sm-offset-10 col-sm-2">
+				<button type="submit" class="btn btn-default">Submit</button>
+			</div>
+		</div>
+	</form>
+	<div id="yelp" class="panel panel-default">
+		<h1 id="yelpHeader" class="panel-heading"><a data-toggle="collapse" data-parent="#yelp" href="#yelpResults">Yelp Results</a><img style="margin-left: 10px" src="http://s3-media3.fl.yelpcdn.com/assets/2/www/img/65526d1a519b/developers/Powered_By_Yelp_Red.png">
+		</h1>
+		<div id="yelpResults" class="container-fluid panel-collapse collapse panel-group">
+		</div>
+	</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
