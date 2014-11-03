@@ -15,7 +15,7 @@ function yelpSendRequest( action, parameters ) {
 		secret: auth.accessTokenSecret
 	};
 	
-	parameters.callback = 'yelpShowBusinesses';
+
 	
 	var requestData = {
 		url: action,
@@ -102,5 +102,8 @@ function yelpShowBusinesses( data ) {
 function yelpFindBusinesses( newSearch ) {
 
 	lastYelpSearch = newSearch;
+	
+	newSearch.callback = 'yelpShowBusinesses';
 	yelpSendRequest( 'http://api.yelp.com/v2/search', newSearch );
+	delete newSearch.callback;
 }
