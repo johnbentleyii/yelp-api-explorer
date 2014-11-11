@@ -15,8 +15,6 @@ function yelpSendRequest( action, parameters ) {
 		secret: auth.accessTokenSecret
 	};
 	
-
-	
 	var requestData = {
 		url: action,
 		method: 'GET',
@@ -66,13 +64,52 @@ function yelpFindReviews( id ) {
 	yelpSendRequest( 'http://api.yelp.com/v2/business/' + id, parameters );
 }
 
+var results = new Array();
+
+function yelpFormatString( jsonString ) {
+
+	var formattedString = new String;
+	var length = jsonString.length;
+	var indent = 0;
+	
+	for( var i=0; i<length; i++ ) {
+	
+		formattedString += jsonString[i];
+
+		if( (indent > 0) 
+				&& ((jsonString[i] == "}") || (jsonString[i] == "]")) ) {
+			formattedString += '</span>';
+			indent--;
+		}
+		
+		if( (i < length) &&
+				((jsonString[i+1] == "{") || (jsonString[i+1] == "[")) ) {
+			indent++;
+			formattedString += '<br><span style="margin-left: ' + (indent * 5) + 'px">';
+		}
+		
+		if( jsonString[i] == "," )
+			formattedString += "<br>";
+	}
+			
+	return( formattedString );		
+}
+
+
 function yelpShowBusinesses( data ) {
 
 	console.log( data );
+	results = results.concat( data.businesses );
+	
+	var formattedString = (JSON.stringify( data, null )).replace( /,/g, ",<br>" ).replace( /\:\{/g, ":<br>{" ).replace( /\:\[/g, ":<br>[" );
+	
+	$( '#yelpResponse' ).empty();
+	$( "#yelpResponse" ).append( yelpFormatString( JSON.stringify( data, null ) ) );
+	
 	$( '#yelpHeader > a' ).empty();
 	$( '#yelpHeader > a' ).append( 'Yelp Results (' + data.total + ')' );
 	$( '#yelpResults' ).empty();
-	$( '#yelpResults' ).append( '<div class="row" style="font-weight: bold"><div class="col-sm-4">Name</div><div class="col-sm-3">Address</div><div class="col-sm-3">Phone</div><div class="col-sm-2">Rating</div></div>' 
+	$( '#yelpResults' ).append( '<div class="row" style="font-weight: bold"><div class="col-sm-5">Name</div><div class="col-sm-3">Address</div><div class="col-sm-3">Phone</div><div class="col-sm-1">Rating</div></div>' 
 	);
 	for( var i=0; i < data.businesses.length; i++ ) {
 		var business = data.businesses[i];
@@ -87,7 +124,7 @@ function yelpShowBusinesses( data ) {
 				bizRow += '<br>';
 		}
 		bizRow += '</div><div class="col-sm-3">' + business.display_phone + '</div>';
-		bizRow += '<div class="col-sm-2"><img src="' + business.rating_img_url_small + '"></div>';
+		bizRow += '<div class="col-sm-1"><img src="' + business.rating_img_url_small + '"></div>';
 		$( '#yelpResults' ).append( bizRow );
 		$( '#yelpResults' ).append( '<div id="' + reviewsRowId +'" class="row panel-collapse collapse" loaded="false" style="border: solid 1px; padding: 2px"><div class="col-sm-offset-2 col-sm-3" style="font-weight: bold">Loading Reviews...</div></div>' );
 		$( '#' + reviewsRowId ).on( 'show.bs.collapse', function( ev ) {
@@ -101,9 +138,9 @@ function yelpShowBusinesses( data ) {
 
 function yelpFindBusinesses( newSearch ) {
 
-	lastYelpSearch = newSearch;
-	
 	newSearch.callback = 'yelpShowBusinesses';
 	yelpSendRequest( 'http://api.yelp.com/v2/search', newSearch );
 	delete newSearch.callback;
+
+	lastYelpSearch = newSearch;
 }

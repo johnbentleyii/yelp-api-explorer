@@ -39,7 +39,9 @@
 					delete newSearch[key];
 
 			yelpFindBusinesses( newSearch );
-
+			$( "#searchJSONMessage" ).empty();
+			$( "#searchJSONMessage" ).append( JSON.stringify( lastYelpSearch, null, "<br>" ) );
+			
 			return false;
 		}
 	</script>
@@ -97,15 +99,34 @@
 			</div>
 		</div>			
 		<div class="form-group">
-			<div class="col-sm-offset-10 col-sm-2">
+			<div class="col-sm-1 col-sm-offset-1">
 				<button type="submit" class="btn btn-default">Submit</button>
+			</div>
+			<div id="searchJSON" class="panel panel-default col-sm-10">
+				<button type="button" class="btn" data-toggle="collapse" data-parent="#searchJSON" href="#searchJSONMessage">
+					View JSON Search Request
+				</button>
+				<div id="searchJSONMessage" class="panel-collapse collapse panel-group">
+				</div>
 			</div>
 		</div>
 	</form>
-	<div id="yelp" class="panel panel-default">
-		<h1 id="yelpHeader" class="panel-heading"><a data-toggle="collapse" data-parent="#yelp" href="#yelpResults">Yelp Results</a><img style="margin-left: 10px" src="http://s3-media3.fl.yelpcdn.com/assets/2/www/img/65526d1a519b/developers/Powered_By_Yelp_Red.png">
-		</h1>
+	<div id="yelp" class="panel panel-default container">
+		<div class="row">
+			<div class="col-sm-7">
+				<h2 id="yelpHeader" class="panel-heading"><a data-toggle="collapse" data-parent="#yelp" href="#yelpResults">Yelp Results</a><img style="margin-left: 10px" src="http://s3-media3.fl.yelpcdn.com/assets/2/www/img/65526d1a519b/developers/Powered_By_Yelp_Red.png">
+				</h2>
+			</div>
+			<div class="col-sm-5">
+				<h2 id="jsonResponseHeader" class="panel-heading">
+				<a data-toggle="collapse" data-parent="#yelp" href="#yelpResponse">JSON Response</a>
+				</h2>
+			</div>
+		</div>
+		<div id="yelpResponse" class="container-fluid panel-collapse collapse panel-group">
+		</div>		
 		<div id="yelpResults" class="container-fluid panel-collapse collapse panel-group">
+		</div>
 		</div>
 	</div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
